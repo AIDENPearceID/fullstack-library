@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>مكتبة المحتوى الشامل | تسجيل + تصنيفات + مراجعات</title>
+<style>
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: #121212;
+    color: #eee;
+    margin: 0; padding: 0;
+  }
+  header, footer {
+    background: #1f1f1f;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 2px 5px #000;
+  }
+  header h1 {
+    margin: 0; font-weight: 700;
+    color: #00bcd4;
+  }
+  nav {
+    margin-top: 10px;
+  }
+  nav a {
+    color: #00bcd4;
+    margin: 0 10px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  nav a:hover {
+    text-decoration: underline;
+  }
+  main {
+    max-width: 960px;
+    margin: 20px auto;
+    padding: 0 15px 40px;
+  }
+  .hidden {
+    display: none !important;
+  }
+  /* تسجيل دخول */
+  #login-section, #profile-section, #reviews-section {
+    background: #222;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 12px #00bcd4aa;
+  }
+  form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #00bcd4;
+  }
+  form input[type="text"],
+  form input[type="email"],
+  form input[type="password"],
+  form input[type="url"],
+  form select,
+  form textarea {
+    width: 100%;
+    padding: 8px 12px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    border: none;
+    background: #333;
+    color: #eee;
+    font-size: 1rem;
+    resize: vertical;
+  }
+  form button {
+    background: #00bcd4;
+    color: #121212;
+    font-weight: 700;
+    border-radius: 30px;
+    padding: 12px 25px;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 5px 15px #00bcd4aa;
+    transition: background-color 0.3s ease;
+  }
+  form button:hover {
+    background: #0097a7;
+    box-shadow: 0 7px 20px #0097a7cc;
+  }
+  /* الملف الشخصي */
+  #avatar-preview {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border: 2px solid #00bcd4;
+  }
+  .links-list {
+    list-style: none;
+    padding: 0;
+  }
+  .links-list li {
+    margin-bottom: 6px;
+    word-break: break-all;
+  }
+  /* مراجعات */
+  #filters {
+    margin-bottom: 20px;
+  }
+  #filters select {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: none;
+    background: #333;
+    color: #eee;
+    margin-left: 10px;
+  }
+  .review-card {
+    background: #222;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 8px #00bcd4aa;
+    margin-bottom: 15px;
+    cursor: pointer;
+  }
+  .review-title {
+    font-weight: 700;
+    color: #00bcd4;
+    margin-bottom: 6px;
+  }
+  .review-summary {
+    color: #ccc;
+    margin-bottom: 8px;
+  }
+  .review-type {
+    font-size: 0.85rem;
+    color: #999;
+  }
+  .review-rating {
+    color: #ffd700;
+    font-size: 1.1rem;
+  }
+  /* أزرار التنقل */
+  .btn {
+    background: #00bcd4;
+    color: #121212;
+    font-weight: 700;
+    border-radius: 30px;
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 5px 15px #00bcd4aa;
+    transition: background-color 0.3s ease;
+    user-select: none;
+  }
+  .btn:hover {
+    background: #0097a7;
+    box-shadow: 0 7px 20px #0097a7cc;
+  }
+  /* تفصيل مراجعة */
+  #review-detail {
+    background: #222;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 12px #00bcd4aa;
+  }
+  #review-detail h2 {
+    color: #00bcd4;
+    margin-bottom: 10px;
+  }
+  #review-detail p {
+    margin-bottom: 15px;
+    line-height: 1.5;
+    color: #ccc;
+  }
+  #review-detail .back-btn {
+    cursor: pointer;
+    color: #00bcd4;
+    text-decoration: underline;
+    user-select: none;
+  }
+  /* رسائل الخطأ */
+  .error-msg {
+    background: #a00;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>مكتبة المحتوى الشامل</h1>
+  <nav>
+    <a href="#" id="nav-login">تسجيل / دخول</a>
+    <a href="#" id="nav-profile" class="hidden">حسابي</a>
+    <a href="#" id="nav-reviews" class="hidden">المراجعات</a>
+    <a href="#" id="nav-logout" class="hidden">تسجيل خروج</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- تسجيل ودخول -->
+  <section id="login-section">
+    <h2>تسجيل حساب جديد</h2>
+    <div id="login-error" class="error-msg hidden"></div>
+    <form id="register-form">
+      <label for="username">اسم المستخدم (إنجليزي أو روسي فقط، لا _ أو .، مسموح -)</label>
+      <input type="text" id="username" required placeholder="أدخل اسم المستخدم" minlength="5" maxlength="20" />
+      <label for="email">البريد الإلكتروني</label>
+      <input type="email" id="email" required placeholder="example@example.com" />
+      <label for="password">كلمة المرور</label>
+      <input type="password" id="password" required minlength="6" placeholder="كلمة المرور" />
+      <button type="submit">تسجيل</button>
+    </form>
+  </section>
+
+  <!-- الملف الشخصي -->
+  <section id="profile-section" class="hidden">
+    <h2>حسابي</h2>
+    <img id="avatar-preview" src="" alt="صورتك الشخصية" />
+    <form id="profile-form">
+      <label for="avatar-upload">تغيير الصورة الشخصية</label>
+      <input type="file" id="avatar-upload" accept="image/*" />
+      <label>روابطك الشخصية</label>
+      <ul class="links-list" id="user-links-list"></ul>
+      <input type="url" id="new-link" placeholder="أضف رابط جديد" />
+      <button type="button" id="add-link-btn" class="btn">أضف رابط</button>
+      <button type="submit">حفظ التغييرات</button>
+    </form>
+  </section>
+
+  <!-- مراجعات -->
+  <section id="reviews-section" class="hidden">
+    <h2>مراجعات المحتوى</h2>
+
+    <div id="filters">
+      <label>نوع المحتوى:
+        <select id="filter-type">
+          <option value="all">الكل</option>
+          <option value="كتاب">كتب</option>
+          <option value="فيلم">أفلام</option>
+          <option value="مسلسل">مسلسلات</option>
+          <option value="اغاني">أغاني</option>
+          <option value="كوميك">كوميك</option>
+          <option value="مانغا">مانغا</option>
+          <option value="مانهو">مانهو</option>
+        </select>
+      </label>
+      <label>تصنيف فرعي:
+        <select id="filter-subtype">
+          <option value="all">الكل</option>
+          <!-- ستتغير حسب نوع المحتوى -->
+        </select>
+      </label>
+      <button class="btn" id="add-review-btn">+ أضف مراجعة جديدة</button>
+    </div>
+
+    <div id="reviews-list"></div>
+  </section>
+
+  <!-- إضافة مراجعة -->
+  <section id="add-review-section" class="hidden">
+    <h2>إضافة مراجعة جديدة</h2>
+    <form id="add-review-form">
+      <label for="review-type">نوع المحتوى</label>
+      <select id="review-type" required>
+        <option value="" disabled selected>اختر النوع</option>
+        <option value="كتاب">كتب</option>
+        <option value="فيلم">أفلام</option>
+        <option value="مسلسل">مسلسلات</option>
+        <option value="اغاني">أغاني</option>
+        <option value="كوميك">كوميك</option>
+        <option value="مانغا">مانغا</option>
+        <option value="مانهو">مانهو</option>
+      </select>
+
+      <label for="review-subtype">التصنيف الفرعي</label>
+      <select id="review-subtype" required>
+        <option value="" disabled selected>اختر التصنيف الفرعي</option>
+      </select>
+
+      <label for="review-title">عنوان المراجعة</label>
+      <input type="text" id="review-title" required />
+
+      <label for="review-summary">ملخص المراجعة</label>
+      <textarea id="review-summary" required></textarea>
+
+      <label for="review-rating">التقييم (1-5)</label>
+      <input type="number" id="review-rating" min="1" max="5" step="0.5" required />
+
+      <label for="review-image">رفع صورة (اختياري)</label>
+      <input type="file" id="review-image" accept="image/*" />
+
+      <button type="submit">أضف المراجعة</button>
+      <button type="button" id="cancel-add-review">إلغاء</button>
+    </form>
+  </section>
+
+  <!-- تفاصيل مراجعة -->
+  <section id="review-detail-section" class="hidden">
+    <h2 id="detail-title"></h2>
+    <img id="detail-image" src="" alt="صورة المراجعة" style="max-width:100%; border-radius:8px; margin-bottom: 15px;" />
+    <p id="detail-summary"></p>
+    <p><strong>التصنيف: </strong><span id="detail-type"></span> - <span id="detail-subtype"></span></p>
+    <p><strong>التقييم: </strong><span id="detail-rating"></span></p>
+
+    <!-- هنا ممكن نضيف قسم الحلقات والفصول -->
+
+    <button class="btn" id="back-to-reviews">عودة للمراجعات</button>
+  </section>
+
+</main>
+
+<footer>
+  &copy; 2025 مكتبة المحتوى الشامل
+</footer>
+
+<script>
+  // ==== بيانات المستخدمين والمراجعات تخزين مؤقت في localStorage ====
+
+  // دالة تحقق اسم المستخدم حسب الشروط
+  function isValidUsername(username) {
+    if (username.length < 5) return false;
+    if (username.includes('_') || username.includes('.')) return false;
+    const regex = /^[a-zA-Z0-9\u0400-\u04FF-]+$/;
+    return regex.test(username);
+  }
+
+  // الحصول على المستخدمين من localStorage
+  function getUsers() {
+    return JSON.parse(localStorage.getItem('users') || '[]');
+  }
+
+  // حفظ المستخدمين
+  function saveUsers(users) {
+    localStorage.setItem('users', JSON.stringify(users));
+  }
+
+  // الحصول على المستخدم الحالي
+  function getCurrentUser() {
+    return JSON.parse(localStorage.getItem('currentUser') || 'null');
+  }
+
+  // حفظ المستخدم الحالي
+  function setCurrentUser(user) {
+    localStorage.setItem('currentUser', JSON.stringify(user));
+  }
+
+  // تسجيل مستخدم جديد
+  const registerForm = document.getElementById('register-form');
+  const loginError = document.getElementById('login-error');
+
+  registerForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    loginError.classList.add('hidden');
+    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    if (!isValidUsername(username)) {
+      loginError.textContent = 'اسم المستخدم غير صالح. يجب أن يكون 5 أحرف فأكثر، يسمح بالحروف الانجليزية والروسية والأرقام والشرطة (-) فقط، وممنوع _ و .';
+      loginError.classList.remove('hidden');
+      return;
+    }
+
+    let users = getUsers();
+    if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+      loginError.textContent = 'اسم المستخدم هذا مسجل بالفعل.';
+      loginError.classList.remove('hidden');
+      return;
+    }
+
+    if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+      loginError.textContent = 'البريد الإلكتروني مستخدم بالفعل.';
+      loginError.classList.remove('hidden');
+      return;
+    }
+
+    // حفظ المستخدم (بدون تشفير كلمة المرور في المثال)
+    const newUser = { username, email, password, avatar: '', links: [] };
+    users.push(newUser);
+    saveUsers(users);
+    setCurrentUser(newUser);
+    showProfile();
+  });
+
+  // عرض الملف الشخصي
+  const profileSection = document.getElementById('profile-section');
+  const loginSection = document.getElementById('login-section');
+  const reviewsSection = document.getElementById('reviews-section');
+  const navLogin = document.getElementById('nav-login');
+  const navProfile = document.getElementById('nav-profile');
+  const navReviews = document.getElementById('nav-reviews');
+  const navLogout = document.getElementById('nav-logout');
+
+  // تابع عرض الملف الشخصي - تحميل بيانات المستخدم الحالي في الواجهة
+function showProfile() {
+  loginSection.classList.add('hidden');
+  profileSection.classList.remove('hidden');
+  reviewsSection.classList.add('hidden');  // نخلي المراجعات مخفية في حسابي
+  navLogin.classList.add('hidden');
+  navProfile.classList.remove('hidden');
+  navReviews.classList.remove('hidden');
+  navLogout.classList.remove('hidden');
+
+  const user = getCurrentUser();
+  if (!user) {
+    alert('خطأ، لم يتم العثور على المستخدم الحالي!');
+    return;
+  }
+
+  // عرض الصورة الشخصية أو صورة افتراضية
+  const avatarPreview = document.getElementById('avatar-preview');
+  avatarPreview.src = user.avatar || 'https://via.placeholder.com/100?text=User';
+
+  // عرض روابط المستخدم
+  renderUserLinks(user.links || []);
+}
+
+// عرض روابط المستخدم في القائمة
+function renderUserLinks(links) {
+  const list = document.getElementById('user-links-list');
+  list.innerHTML = '';
+  links.forEach((link, idx) => {
+    const li = document.createElement('li');
+    li.textContent = link;
+    // زر حذف
+    const delBtn = document.createElement('button');
+    delBtn.textContent = '×';
+    delBtn.style.marginLeft = '10px';
+    delBtn.style.color = 'red';
+    delBtn.style.cursor = 'pointer';
+    delBtn.addEventListener('click', () => {
+      removeUserLink(idx);
+    });
+    li.appendChild(delBtn);
+    list.appendChild(li);
+  });
+}
+
+// حذف رابط من روابط المستخدم
+function removeUserLink(index) {
+  let user = getCurrentUser();
+  if (!user) return;
+  user.links.splice(index, 1);
+  updateUser(user);
+  renderUserLinks(user.links);
+}
+
+// تحديث بيانات المستخدم في التخزين
+function updateUser(updatedUser) {
+  let users = getUsers();
+  const idx = users.findIndex(u => u.username.toLowerCase() === updatedUser.username.toLowerCase());
+  if (idx !== -1) {
+    users[idx] = updatedUser;
+    saveUsers(users);
+    setCurrentUser(updatedUser);
+  }
+}
+
+// إضافة رابط جديد من الواجهة
+document.getElementById('add-link-btn').addEventListener('click', () => {
+  const newLinkInput = document.getElementById('new-link');
+  const val = newLinkInput.value.trim();
+  if (!val) return alert('الرجاء إدخال رابط صحيح.');
+  let user = getCurrentUser();
+  if (!user) return;
+  user.links = user.links || [];
+  user.links.push(val);
+  updateUser(user);
+  renderUserLinks(user.links);
+  newLinkInput.value = '';
+});
+
+// رفع الصورة الشخصية وتحديثها
+document.getElementById('avatar-upload').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) return alert('الملف يجب أن يكون صورة فقط!');
+  const reader = new FileReader();
+  reader.onload = () => {
+    const user = getCurrentUser();
+    if (!user) return;
+    user.avatar = reader.result;
+    updateUser(user);
+    document.getElementById('avatar-preview').src = reader.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+// حفظ تغييرات الملف الشخصي (يمكن توسعته مستقبلاً)
+document.getElementById('profile-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  alert('تم حفظ التغييرات!');
+});
+
+// تسجيل خروج
+navLogout.addEventListener('click', (e) => {
+  e.preventDefault();
+  localStorage.removeItem('currentUser');
+  navLogin.classList.remove('hidden');
+  navProfile.classList.add('hidden');
+  navReviews.classList.add('hidden');
+  navLogout.classList.add('hidden');
+  profileSection.classList.add('hidden');
+  reviewsSection.classList.add('hidden');
+  loginSection.classList.remove('hidden');
+});
+
+// التنقل بين الصفحات
+navLogin.addEventListener('click', (e) => {
+  e.preventDefault();
+  loginSection.classList.remove('hidden');
+  profileSection.classList.add('hidden');
+  reviewsSection.classList.add('hidden');
+});
+
+navProfile.addEventListener('click', (e) => {
+  e.preventDefault();
+  showProfile();
+});
+
+navReviews.addEventListener('click', (e) => {
+  e.preventDefault();
+  showReviews();
+});
+
+// بيانات المراجعات (نموذج مبدئي)
+let reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
+
+// عرض المراجعات مع فلترة حسب النوع والتصنيف الفرعي
+function showReviews() {
+  loginSection.classList.add('hidden');
+  profileSection.classList.add('hidden');
+  reviewsSection.classList.remove('hidden');
+  addReviewSection.classList.add('hidden');
+  reviewDetailSection.classList.add('hidden');
+
+  renderReviewsFilterOptions();
+  renderReviewsList(reviews);
+}
+
+// تصنيفات فرعية حسب النوع
+const subtypes = {
+  'كتاب': ['روايات', 'فلسفة', 'علوم', 'تنمية ذاتية'],
+  'فيلم': ['واقعية', 'أنمي', 'أنميشن', 'وثائقي'],
+  'مسلسل': ['دراما', 'كوميدي', 'أنمي', 'وثائقي'],
+  'اغاني': ['روك', 'راب', 'عربي', 'كلاسيكي'],
+  'كوميك': ['أبطال خارقين', 'خيال علمي', 'رومانسي'],
+  'مانغا': ['شونين', 'شوجو', 'سينين'],
+  'مانهو': ['أكشن', 'رومانسي', 'خيال']
+};
+
+// تعبئة قائمة التصنيف الفرعي بناءً على النوع المختار
+const filterTypeSelect = document.getElementById('filter-type');
+const filterSubtypeSelect = document.getElementById('filter-subtype');
+
+filterTypeSelect.addEventListener('change', () => {
+  const val = filterTypeSelect.value;
+  fillSubtypeOptions(val);
+  filterSubtypeSelect.value = 'all';
+  filterReviews();
+});
+
+filterSubtypeSelect.addEventListener('change', filterReviews);
+
+function fillSubtypeOptions(type) {
+  filterSubtypeSelect.innerHTML = '<option value="all">الكل</option>';
+  if (type && subtypes[type]) {
+    subtypes[type].forEach(s => {
+      const option = document.createElement('option');
+      option.value = s;
+      option.textContent = s;
+      filterSubtypeSelect.appendChild(option);
+    });
+  }
+}
+
+// عرض المراجعات حسب الفلتر
+function filterReviews() {
+  const type = filterTypeSelect.value;
+  const subtype = filterSubtypeSelect.value;
+  let filtered = reviews;
+
+  if (type !== 'all') filtered = filtered.filter(r => r.type === type);
+  if (subtype !== 'all') filtered = filtered.filter(r => r.subtype === subtype);
+
+  renderReviewsList(filtered);
+}
+
+const reviewsListDiv = document.getElementById('reviews-list');
+
+function renderReviewsList(list) {
+  reviewsListDiv.innerHTML = '';
+  if (list.length === 0) {
+    reviewsListDiv.textContent = 'لا توجد مراجعات.';
+    return;
+  }
+  list.forEach(r => {
+    const card = document.createElement('div');
+    card.className = 'review-card';
+    card.innerHTML = `
+      <div class="review-title">${r.title}</div>
+      <div class="review-summary">${r.summary}</div>
+      <div class="review-type">${r.type} - ${r.subtype}</div>
+      <div class="review-rating">${'★'.repeat(Math.round(r.rating))}</div>
+    `;
+    card.addEventListener('click', () => {
+      showReviewDetail(r.id);
+    });
+    reviewsListDiv.appendChild(card);
+  });
+}
+
+// إضافة مراجعة جديدة (واجهة)
+const addReviewSection = document.getElementById('add-review-section');
+const addReviewBtn = document.getElementById('add-review-btn');
+const addReviewForm = document.getElementById('add-review-form');
+const cancelAddReviewBtn = document.getElementById('cancel-add-review');
+const reviewDetailSection = document.getElementById('review-detail-section');
+
+addReviewBtn.addEventListener('click', () => {
+  reviewsSection.classList.add('hidden');
+  addReviewSection.classList.remove('hidden');
+  reviewDetailSection.classList.add('hidden');
+  fillAddReviewSubtypeOptions();
+  addReviewForm.reset();
+});
+
+cancelAddReviewBtn.addEventListener('click', () => {
+  addReviewSection.classList.add('hidden');
+  reviewsSection.classList.remove('hidden');
+});
+
+// تعبئة تصنيفات فرعية في فورم إضافة مراجعة
+const addReviewTypeSelect = document.getElementById('review-type');
+const addReviewSubtypeSelect = document.getElementById('review-subtype');
+
+addReviewTypeSelect.addEventListener('change', fillAddReviewSubtypeOptions);
+
+function fillAddReviewSubtypeOptions() {
+  const val = addReviewTypeSelect.value;
+  addReviewSubtypeSelect.innerHTML = '<option value="" disabled selected>اختر التصنيف الفرعي</option>';
+  if (val && subtypes[val]) {
+    subtypes[val].forEach(s => {
+      const option = document.createElement('option');
+      option.value = s;
+      option.textContent = s;
+      addReviewSubtypeSelect.appendChild(option);
+    });
+  }
+}
+
+// معالجة إرسال إضافة مراجعة جديدة
+addReviewForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const type = addReviewTypeSelect.value;
+  const subtype = addReviewSubtypeSelect.value;
+  const title = document.getElementById('review-title').value.trim();
+  const summary = document.getElementById('review-summary').value.trim();
+  const rating = parseFloat(document.getElementById('review-rating').value);
+  const imageFile = document.getElementById('review-image').files[0];
+
+  if (!type || !subtype || !title || !summary || isNaN(rating) || rating < 1 || rating > 5) {
+    alert('الرجاء تعبئة جميع الحقول المطلوبة بشكل صحيح.');
+    return;
+  }
+
+  const newReview = {
+    id: Date.now(),
+    type,
+    subtype,
+    title,
+    summary,
+    rating,
+    image: ''
+  };
+
+  if (imageFile) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      newReview.image = reader.result;
+      saveReviewAndReturn(newReview);
+    };
+    reader.readAsDataURL(imageFile);
+  } else {
+    saveReviewAndReturn(newReview);
+  }
+});
+
+function saveReviewAndReturn(review) {
+  reviews.unshift(review);
+  localStorage.setItem('reviews', JSON.stringify(reviews));
+  alert('تم إضافة المراجعة بنجاح!');
+  addReviewSection.classList.add('hidden');
+  showReviews();
+}
+
+// عرض تفاصيل مراجعة معينة
+function showReviewDetail(id) {
+  const review = reviews.find(r => r.id === id);
+  if (!review) return;
+
+  reviewsSection.classList.add('hidden');
+  addReviewSection.classList.add('hidden');
+  reviewDetailSection.classList.remove('hidden');
+
+  document.getElementById('detail-title').textContent = review.title;
+  document.getElementById('detail-summary').textContent = review.summary;
+  document.getElementById('detail-type').textContent = review.type;
+  document.getElementById('detail-subtype').textContent = review.subtype;
+  document.getElementById('detail-rating').textContent = '★'.repeat(Math.round(review.rating));
+  document.getElementById('detail-image').src = review.image || 'https://via.placeholder.com/400x250?text=No+Image';
+}
+
+// زر العودة للمراجعات
+document.getElementById('back-to-reviews').addEventListener('click', () => {
+  reviewDetailSection.classList.add('hidden');
+  showReviews();
+});
+
+// عند تحميل الصفحة: عرض صفحة تسجيل أو ملف شخصي حسب الحالة
+window.addEventListener('load', () => {
+  const user = getCurrentUser();
+  if (user) {
+    showProfile();
+  } else {
+    loginSection.classList.remove('hidden');
+    profileSection.classList.add('hidden');
+    reviewsSection.classList.add('hidden');
+  }
+});
+</script>
+
+</body>
+</html>
